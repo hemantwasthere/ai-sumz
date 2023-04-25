@@ -8,6 +8,7 @@ function Demo() {
     summary: "",
   });
   const [allArticles, setAllArticles] = useState([]);
+  const [copied, setCopied] = useState("");
   const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
 
   useEffect(() => {
@@ -32,13 +33,20 @@ function Demo() {
     }
   };
 
+  const handleCopy = (copyUrl) => {
+    setCopied(copyUrl);
+    navigator.clipboard.writeText(copyUrl);
+
+    setTimeout(() => setCopied(false), 3000);
+  };
+
   return (
     <section className="mt-16 w-full max-w-xl">
       {/* Search  */}
       <div className="flex flex-col w-full gap-2F">
         <form
           action=""
-          className="relative flex justify-center items-center"
+          className="relative flex justify-center items-center mb-2"
           onSubmit={(e) => handleSubmit(e)}
         >
           <img
@@ -73,9 +81,9 @@ function Demo() {
               onClick={() => setArticle(item)}
               className="link_card"
             >
-              <div className="copy_btn">
+              <div className="copy_btn" onClick={() => handleCopy(item.url)}>
                 <img
-                  src={copy}
+                  src={copied === item.url ? tick : copy}
                   alt="copy_icon"
                   className="w-[40%] h-[40%] object-contain"
                 />
@@ -89,8 +97,32 @@ function Demo() {
       </div>
 
       {/* Display results  */}
-
-      
+      <div className="my-10 max-w-full flex justify-center items-center">
+        {isFetching ? (
+          <img src={loader} alt="loader" className="w-20 h-20 object-contain" />
+        ) : error ? (
+          <p className="text-center font-inter font-bold text-black">
+            Well, that wasn&rsquo;t supposed to happen...
+            <br />
+            <span className="font-satoshi font-normal text-gray-700">
+              {error?.data?.data}
+            </span>
+          </p>
+        ) : (
+          article?.summary && (
+            <div className="flex flex-col gap-3">
+              <h2 className="font-satoshi font-bold text-gray-600 text-xl">
+                Article <span className="blue_gradient">Summary</span>
+              </h2>
+              <div className="summary_box">
+                <p className="font-inter font-medium text-sm text-gray-700">
+                  {article.summary}
+                </p>
+              </div>
+            </div>
+          )
+        )}
+      </div>
     </section>
   );
 }
