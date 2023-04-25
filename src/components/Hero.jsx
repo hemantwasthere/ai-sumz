@@ -25,7 +25,7 @@ function Hero() {
 
       <h2 className="desc">
         Simplify your reading with Summarizer, an open-source article summarizer
-        that transfomrs lengthy articles into clear and concise summaries
+        that transforms lengthy articles into clear and concise summaries
       </h2>
     </header>
   );
